@@ -1,0 +1,74 @@
+source -> readFrom -> filter -> enrichment
+                                    |
+                                down arrow
+                                IMDG
+                                 ^
+------->-------------------------|               Sink
+Client|
+App   |
+----- |
+main()|
+
+use Java's Serializable
+implement serializable
+write to HazelcastJsonValue
+Portable?
+Compac good but still in beta
+keyframestage
+map.get(key) (good)
+SELECT feature FROM mapName WHERE ... (bad unless no choice)
+
+show ecommerce vendors their existing recommenders may be bias
+or the features used may inherently contain biases
+
+lists of one movie per line (one movie, or 7 movies) -> user 1's list, user 2's list
+stream those lists into the python script as imdg map
+key user, value movie liked
+another jet job that will pump the data used into python
+two phases or not?
+
+
+given user profile (can make synthetic ones if necessary, A,B,C,D, could be different demographics too)
+layout engine that will come up with a set of films that have preference scores associated with them
+two different models for page generation (very quickly)
+a/b testing~
+bootstrapped by dataset as disk file -> jet job to load into imdg store -> new jet job for inferencing from store
+-> to memory -> get stuff back in real time
+user picks which generated page, and therefore which model, is better (k-means, random forest, etc.)
+based on the aforementioned personas we create
+
+output as csv file for someone to polish for frontend
+
+milestones
+dataset picking
+develop a few initial personas (may include 5-10 films that they already like, possibly demographic info if dataset
+has it)
+
+json
+{
+    "name_normalized": "Eternals"
+    "production_year": 2021
+    "director": "Chloe Zhao"
+    "actors": ["Richard Madden", ...]
+    "actresses": ["Gemma Chan", ...]
+    "average_rating": 
+    "genre": ["superhero", "science fiction", ...]
+}
+
+lookup key                              lookup value
+
+director           ------->             list of movie keys
+title              ------->             movie record
+
+distance metrics? 0.25 actor match, 1.25 actor match, director match
+
+log time lookup for in memory data in order to support the alg used
+
+lowercase script excess info to get a key match?
+
+jet.py -> full execution pipeline
+
+start with input (gender, age, list of liked movies)
+then run the data through here
+
+using cosine similarity
