@@ -63,10 +63,10 @@ df_cbr['cast'] = df_cbr['cast'].apply(lambda x: x[:limit_cast_num] if len(x) >= 
 df_cbr['cast'] = df_cbr['cast'].apply(lambda x: [str.lower(i.replace(" ", "")) for i in x])
 
 # handle keyword
-stemmer = SnowballStemmer('english')
-df_cbr['keyword'] = df['keyword'].apply(lambda x: eval(x))
-df_cbr['keyword'] = df_cbr['keyword'].apply(lambda x: [stemmer.stem(i) for i in x])
-df_cbr['keyword'] = df_cbr['keyword'].apply(lambda x: [str.lower(i.replace(" ", "")) for i in x])
+# stemmer = SnowballStemmer('english')
+# df_cbr['keyword'] = df['keyword'].apply(lambda x: eval(x))
+# df_cbr['keyword'] = df_cbr['keyword'].apply(lambda x: [stemmer.stem(i) for i in x])
+# df_cbr['keyword'] = df_cbr['keyword'].apply(lambda x: [str.lower(i.replace(" ", "")) for i in x])
 # handle genres
 df_cbr['genre'] = df['genres']
 
@@ -74,13 +74,9 @@ df_cbr['genre'] = df['genres']
 df_cbr['title'] = df['title']
 
 # merge all
-df_cbr['mixed'] = df_cbr['keyword'] + df_cbr['cast'] + df_cbr['genre']
+# df_cbr['mixed'] = df_cbr['keyword'] + df_cbr['cast'] + df_cbr['genre']
+df_cbr['mixed'] = df_cbr['cast'] + df_cbr['genre']
 df_cbr['mixed'] = df_cbr['mixed'].apply(lambda x: ' '.join(x))
-
-s = df_cbr.apply(lambda x: pd.Series(x['keyword']), axis=1).stack().reset_index(level=1, drop=True)
-s.name = 'keyword'
-s = s.value_counts()
-s = s[s > 1]
 
 count = CountVectorizer(analyzer='word', ngram_range=(1, 2), min_df=0, stop_words='english')
 count_matrix = count.fit_transform(df_cbr['mixed'])
@@ -93,13 +89,21 @@ titles = df_cbr['title']
 
 def get_recommendations(title):
     idx = indices[title]
+    print(type(idx))
     similarity_scores = list(enumerate(cosine_sim[idx]))
+    print(similarity_scores)
     similarity_scores = sorted(similarity_scores, key=lambda x: x[1], reverse=True)
+    # print(similarity_scores)
     similarity_scores = similarity_scores[1:21]
     movie_indices = [i[0] for i in similarity_scores]
     return titles.iloc[movie_indices]
+    # return None
 
 
 # example, replace with other movie title
-# "Spawn" (1997) doesn't work however
-print(get_recommendations('the princess bride'))
+# "Spawn" and "Batman" doesn't work however
+print(get_recommendations("home alone"))
+
+# remove duplicate movie ids
+# check for exact same title and year release (to handle different movies with same title)
+# and then remove the entries after the first match
