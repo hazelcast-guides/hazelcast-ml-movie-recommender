@@ -1,5 +1,4 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import json
 from nltk.stem.snowball import SnowballStemmer
 from sklearn.feature_extraction.text import CountVectorizer
@@ -37,7 +36,7 @@ C = df_movie_count_mean["mean"].mean()
 
 m = df_movie_count_mean["count"].quantile(0.9)
 
-df_movies_1 = df_movie_count_mean.copy().loc[df_movie_count_mean["count"] > m]
+df_movies_1 = df_movie_count_mean.copy()
 
 df = pd.merge(df_movies, df_movies_1, on=["movie_id_ml", "title"])
 
@@ -53,22 +52,6 @@ def weighted_rating(x, m=m, C=C):
 df['score'] = df.apply(weighted_rating, axis=1)
 # Sort movies based on score calculated above
 df = df.sort_values('score', ascending=False).reset_index()
-
-# Print the top 15 movies
-df.head(10)
-
-top_n = 10
-plt.barh(df['title'].head(top_n), df['score'].head(top_n), align='center')
-plt.gca().invert_yaxis()
-plt.xlabel("Popularity")
-plt.title("Popular Movies")
-
-df_movies_1_animation = df[df.animation == 1]
-top_n = 10
-plt.barh(df_movies_1_animation['title'].head(top_n), df_movies_1_animation['score'].head(top_n), align='center')
-plt.gca().invert_yaxis()
-plt.xlabel("Popularity")
-plt.title("Popular Movies")
 
 df_cbr = pd.DataFrame()
 
@@ -116,5 +99,6 @@ def get_recommendations(title):
     movie_indices = [i[0] for i in similarity_scores]
     return titles.iloc[movie_indices]
 
-
-print(get_recommendations('star wars'))
+# example, replace with other movie title
+# "Spawn" (1997) doesn't work however
+print(get_recommendations('the princess bride'))
