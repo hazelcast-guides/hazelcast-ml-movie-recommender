@@ -99,6 +99,7 @@ def get_recommendations(title):
     movie_indices = [i[0] for i in similarity_scores]
     return titles.iloc[movie_indices]
 
+
 # example, replace with other movie title
 # "Spawn" (1997) doesn't work however
 print(get_recommendations('the princess bride'))
