@@ -1,6 +1,5 @@
 import pandas as pd
 import json
-from nltk.stem.snowball import SnowballStemmer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -62,11 +61,6 @@ df_cbr['cast'] = df['cast'].apply(
 df_cbr['cast'] = df_cbr['cast'].apply(lambda x: x[:limit_cast_num] if len(x) >= limit_cast_num else x)
 df_cbr['cast'] = df_cbr['cast'].apply(lambda x: [str.lower(i.replace(" ", "")) for i in x])
 
-# handle keyword
-# stemmer = SnowballStemmer('english')
-# df_cbr['keyword'] = df['keyword'].apply(lambda x: eval(x))
-# df_cbr['keyword'] = df_cbr['keyword'].apply(lambda x: [stemmer.stem(i) for i in x])
-# df_cbr['keyword'] = df_cbr['keyword'].apply(lambda x: [str.lower(i.replace(" ", "")) for i in x])
 # handle genres
 df_cbr['genre'] = df['genres']
 
@@ -74,7 +68,6 @@ df_cbr['genre'] = df['genres']
 df_cbr['title'] = df['title']
 
 # merge all
-# df_cbr['mixed'] = df_cbr['keyword'] + df_cbr['cast'] + df_cbr['genre']
 df_cbr['mixed'] = df_cbr['cast'] + df_cbr['genre']
 df_cbr['mixed'] = df_cbr['mixed'].apply(lambda x: ' '.join(x))
 
@@ -87,23 +80,29 @@ indices = pd.Series(df_cbr.index, index=df_cbr['title'])
 titles = df_cbr['title']
 
 
-def get_recommendations(title):
-    idx = indices[title]
-    print(type(idx))
+def get_recs_for_idx(idx):
     similarity_scores = list(enumerate(cosine_sim[idx]))
-    print(similarity_scores)
     similarity_scores = sorted(similarity_scores, key=lambda x: x[1], reverse=True)
-    # print(similarity_scores)
     similarity_scores = similarity_scores[1:21]
     movie_indices = [i[0] for i in similarity_scores]
-    return titles.iloc[movie_indices]
-    # return None
+    return titles.iloc[movie_indices].drop_duplicates()
+
+
+def get_recommendations(title):
+    idxs = indices[title]
+    if "int64" in str(type(idxs)):
+        return get_recs_for_idx(idxs)
+    elif "Series" in str(type(idxs)):
+        accum = pd.Series(dtype=object)
+        for idx in idxs:
+            currentSeries = get_recs_for_idx(idx)
+            accum = pd.concat([currentSeries, accum])
+            accum = accum.drop_duplicates()
+        accum = accum[accum != title]
+        return accum
+    else:
+        raise TypeError("Unrecognized index type (expected int64 or Series)")
 
 
 # example, replace with other movie title
-# "Spawn" and "Batman" doesn't work however
-print(get_recommendations("home alone"))
-
-# remove duplicate movie ids
-# check for exact same title and year release (to handle different movies with same title)
-# and then remove the entries after the first match
+print(get_recommendations("toy story"))
