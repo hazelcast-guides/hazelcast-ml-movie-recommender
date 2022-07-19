@@ -84,8 +84,19 @@ def get_recs_for_idx(idx):
     similarity_scores = list(enumerate(cosine_sim[idx]))
     similarity_scores = sorted(similarity_scores, key=lambda x: x[1], reverse=True)
     similarity_scores = similarity_scores[1:21]
+
     movie_indices = [i[0] for i in similarity_scores]
-    return titles.iloc[movie_indices].drop_duplicates()
+    similar_scores = [i[1] for i in similarity_scores]
+    similar_scores = pd.Series(similar_scores, index=movie_indices)
+    titlesID = titles.iloc[movie_indices]
+
+    df_titles = titlesID.to_frame()
+    df_titles = df_titles.rename_axis('id')
+    df_scores = similar_scores.to_frame()
+    df_scores = df_scores.rename_axis('id')
+    final = df_titles.merge(df_scores, left_on='id', right_on='id')
+    final = final.drop_duplicates('title')
+    return final
 
 
 def get_recommendations(title):
@@ -105,4 +116,6 @@ def get_recommendations(title):
 
 
 # example, replace with other movie title
-print(get_recommendations("toy story"))
+print(get_recommendations("the lion king"))
+
+# add similarity scores to final result
