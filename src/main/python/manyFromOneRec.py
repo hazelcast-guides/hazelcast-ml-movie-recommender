@@ -96,7 +96,7 @@ def get_recs_for_idx(idx):
     df_scores = df_scores.rename_axis('id')
     final = df_titles.merge(df_scores, left_on='id', right_on='id')
     final = final.drop_duplicates('title')
-    return final
+    return final.dropna()
 
 
 def get_recommendations(title):
@@ -108,14 +108,12 @@ def get_recommendations(title):
         for idx in idxs:
             currentSeries = get_recs_for_idx(idx)
             accum = pd.concat([currentSeries, accum])
-            accum = accum.drop_duplicates()
+            accum = accum.drop_duplicates('title')
         accum = accum[accum != title]
-        return accum
+        return accum.dropna()
     else:
         raise TypeError("Unrecognized index type (expected int64 or Series)")
 
 
 # example, replace with other movie title
 print(get_recommendations("the lion king"))
-
-# add similarity scores to final result
