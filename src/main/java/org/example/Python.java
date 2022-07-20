@@ -5,10 +5,8 @@ import com.hazelcast.jet.JetInstance;
 import com.hazelcast.jet.Observable;
 import com.hazelcast.jet.Util;
 import com.hazelcast.jet.config.JobConfig;
-import com.hazelcast.jet.pipeline.BatchStage;
-import com.hazelcast.jet.pipeline.Pipeline;
-import com.hazelcast.jet.pipeline.Sinks;
-import com.hazelcast.jet.pipeline.Sources;
+import com.hazelcast.jet.pipeline.*;
+import com.hazelcast.jet.pipeline.file.FileSources;
 import com.hazelcast.jet.python.PythonServiceConfig;
 
 import java.nio.file.Path;
@@ -32,32 +30,19 @@ import static com.hazelcast.jet.python.PythonTransforms.mapUsingPython;
  */
 public class Python {
 
-    private static final String RESULTS = "py_results";
-
-    private static Pipeline buildPipeline(String baseDir) {
-        Pipeline p = Pipeline.create();
-        BatchStage<String> lines = p.readFrom(Sources.files("src/main/pythonmodels/archive/user1.txt"))
-                //.withoutTimestamps()
-                .apply(mapUsingPython(new PythonServiceConfig()
-                        .setBaseDir(baseDir)
-                        .setHandlerModule("take_sqrt")))
-                .setLocalParallelism(2) // controls how many Python processes will be used
-                .writeTo(Sinks.observable(RESULTS));
-        return p;
-    }
+    private static final String RESULTS = "recResults.csv";
 
     public static void main(String[] args) {
-        Path baseDir = Util.getFilePathOfClasspathResource("pythonmodels");
-        Pipeline p = buildPipeline(baseDir.toString());
-
-        JetInstance jet = Jet.bootstrappedInstance();
-        try {
-            Observable<String> observable = jet.getObservable(RESULTS);
-            observable.addObserver(System.out::println);
-            JobConfig config = new JobConfig().setName("python-model-mapping");
-            jet.newJobIfAbsent(p, config).join();
-        } finally {
-            shutdownAll();
-        }
+        Pipeline p = Pipeline.create();
+        BatchSource<String> source = FileSources.files("src/main/python/archive/movie.txt")
+                .build();
+        BatchStage<String> newStage = p.readFrom(source)
+                .apply(mapUsingPython(new PythonServiceConfig()
+                        .setBaseDir("python/")
+                        .setHandlerModule("manyFromOneRec")))
+                .setLocalParallelism(1)
+                .writeTo(Sinks.files(RESULTS));
+        JobConfig cfg = new JobConfig().setName("python-function");
+        Jet.bootstrappedInstance().newJob(p, cfg);
     }
 }

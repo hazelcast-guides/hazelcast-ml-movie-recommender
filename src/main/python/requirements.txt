@@ -5,5 +5,5 @@ flask
 sklearn
 scipy
 numpy
-seaborn
 tensorflow
+nltk
