@@ -1,4 +1,4 @@
-package org.example;
+package com.hazelcast;
 
 import static org.junit.Assert.assertTrue;
 
