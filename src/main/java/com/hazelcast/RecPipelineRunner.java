@@ -63,8 +63,8 @@ public class RecPipelineRunner implements Runnable {
         SinkStage newStage = p.readFrom(source)
                 .apply(mapUsingPythonBatch(new PythonServiceConfig()
                         .setBaseDir("src/main/python/")
-                        .setHandlerModule("manyFromOneRec")))
-                        // .setHandlerModule("test")))
+                        .setHandlerModule("manyFromOneRec")
+                        .setHandlerFunction("get_recommendations")))
                 .setLocalParallelism(1)
                 .writeTo(Sinks.files(RESULTS_DIR));
 
