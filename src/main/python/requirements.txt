@@ -1,9 +1,4 @@
-surprise
 pandas
-lightfm
-flask
-sklearn
+scikit-learn
 scipy
 numpy
-tensorflow
-nltk

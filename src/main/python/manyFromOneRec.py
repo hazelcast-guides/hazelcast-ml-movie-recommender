@@ -130,4 +130,4 @@ def get_recommendations(title):
 
 
 # example, replace with other movie title
-print(get_recommendations("spawn"))
+# print(get_recommendations("spawn"))

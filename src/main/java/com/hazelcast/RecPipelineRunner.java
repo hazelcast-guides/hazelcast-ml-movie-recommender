@@ -1,5 +1,6 @@
 package com.hazelcast;
 
+import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.jet.Job;
@@ -50,14 +51,10 @@ public class RecPipelineRunner implements Runnable {
 
     @Override
     public void run() {
-        // Create the Hazelcast runtime instance and wait for it to start
-        // to avoid a known issue
-        HazelcastInstance hazelcast = Hazelcast.bootstrappedInstance();
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            // do nothing
-        }
+        // Create the Hazelcast runtime instance
+        Config config = new Config();
+        config.getJetConfig().setEnabled(true).setResourceUploadEnabled(true);
+        HazelcastInstance hazelcast = Hazelcast.newHazelcastInstance(config);
 
         // Create the Hazelcast Jet pipeline
         Pipeline p = Pipeline.create();
@@ -66,12 +63,14 @@ public class RecPipelineRunner implements Runnable {
         SinkStage newStage = p.readFrom(source)
                 .apply(mapUsingPythonBatch(new PythonServiceConfig()
                         .setBaseDir("src/main/python/")
-                        .setHandlerModule("manyFromOneRec")))
+                        .setHandlerModule("manyFromOneRec")
+                        .setHandlerFunction("get_recommendations")))
                 .setLocalParallelism(1)
                 .writeTo(Sinks.files(RESULTS_DIR));
 
         // Configure and create the Hazelcast Jet job using the Hazelcast instance
         JobConfig cfg = new JobConfig().setName("movie-recommendation");
+
         Job newJob = hazelcast.getJet().newJob(p, cfg);
 
         // Join to the new job to block this thread until parallel execution
