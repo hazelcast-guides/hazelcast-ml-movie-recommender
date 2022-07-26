@@ -9,6 +9,9 @@ Please edit data/input/input.txt with the text of your movie.
 (Non-English title films - use the original name. If the language uses logograms,
 use romanized title.)
 
-Using Python 3.7.9 as a virtual environment.
+If there is a pre-existing recommendations.txt file in the output folder, running
+new input will overwrite the file.
+
+Developed using Hazelcast 5.1.2 and Python 3.7.9 as a virtual environment.
 
 Data used from [Movinder's set](github.com/Movinder/movielens-imdb-exploration).

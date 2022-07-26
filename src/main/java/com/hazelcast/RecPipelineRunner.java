@@ -6,6 +6,7 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.jet.Job;
 import com.hazelcast.jet.config.JobConfig;
 import com.hazelcast.jet.pipeline.*;
+import com.hazelcast.jet.pipeline.file.FileFormat;
 import com.hazelcast.jet.pipeline.file.FileSources;
 import com.hazelcast.jet.python.PythonServiceConfig;
 
@@ -59,6 +60,7 @@ public class RecPipelineRunner implements Runnable {
         // Create the Hazelcast Jet pipeline
         Pipeline p = Pipeline.create();
         BatchSource<String> source = FileSources.files(INPUT_FILE_PATH_ABS)
+                .format(FileFormat.lines())
                 .build();
         SinkStage newStage = p.readFrom(source)
                 .map(String::toLowerCase)
