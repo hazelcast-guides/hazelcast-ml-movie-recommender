@@ -9,6 +9,4 @@ Please edit data/input/input.txt with the text of your movie.
 (Non-English title films - use the original name. If the language uses logograms,
 use romanized title.)
 
-make get_recommendations wrapper
-
 Using Python 3.7.9 as a virtual environment.

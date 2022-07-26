@@ -1,10 +1,7 @@
-from functools import wraps
-
 import pandas as pd
 import json
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import time
 
 genres = ['unknown', 'action', 'adventure', 'animation', 'childrens', 'comedy', 'crime', 'documentary', 'drama',
           'fantasy', 'noir', 'horror', 'musical', 'mystery', 'romance', 'scifi', 'thriller', 'war', 'western']
@@ -82,16 +79,13 @@ cosine_sim = cosine_similarity(count_matrix, count_matrix)
 indices = pd.Series(df_cbr.index, index=df_cbr['title'])
 titles = df_cbr['title']
 
-def time_wrapper(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        result = func(*args, **kwargs)
-        end = time.time()
-        print(func.__name__, end - start)
-        return result
 
-    return wrapper
+def do_recommender(input_list):
+    if len(input_list) != 1:
+        raise ValueError("Expected input list of length 1.")
+    rec_result = get_recommendations(input_list[0])
+    return [str(rec_result)]
+
 
 def get_recs_for_idx(idx):
     similarity_scores = list(enumerate(cosine_sim[idx]))
@@ -112,7 +106,6 @@ def get_recs_for_idx(idx):
     return final.dropna()
 
 
-@time_wrapper
 def get_recommendations(title):
     idxs = indices[title]
     if "int64" in str(type(idxs)):
@@ -130,4 +123,5 @@ def get_recommendations(title):
 
 
 # example, replace with other movie title
-print(get_recommendations("spawn"))
+# print(get_recommendations("spawn"))
+# print(do_recommender(["spawn"]))

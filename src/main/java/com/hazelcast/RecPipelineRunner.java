@@ -64,7 +64,7 @@ public class RecPipelineRunner implements Runnable {
                 .apply(mapUsingPythonBatch(new PythonServiceConfig()
                         .setBaseDir("src/main/python/")
                         .setHandlerModule("manyFromOneRec")
-                        .setHandlerFunction("get_recommendations")))
+                        .setHandlerFunction("do_recommender")))
                 .setLocalParallelism(1)
                 .writeTo(Sinks.files(RESULTS_DIR));
 
