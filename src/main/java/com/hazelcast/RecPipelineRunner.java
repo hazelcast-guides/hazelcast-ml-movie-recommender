@@ -61,6 +61,7 @@ public class RecPipelineRunner implements Runnable {
         BatchSource<String> source = FileSources.files(INPUT_FILE_PATH_ABS)
                 .build();
         SinkStage newStage = p.readFrom(source)
+                .map(String::toLowerCase)
                 .apply(mapUsingPythonBatch(new PythonServiceConfig()
                         .setBaseDir("src/main/python/")
                         .setHandlerModule("manyFromOneRec")
