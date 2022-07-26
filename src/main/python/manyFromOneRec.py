@@ -83,8 +83,9 @@ titles = df_cbr['title']
 def do_recommender(input_list):
     if len(input_list) != 1:
         raise ValueError("Expected input list of length 1.")
-    rec_result = get_recommendations(input_list[0])
-    return [str(rec_result)]
+    # rec_result = get_recommendations(input_list[0])
+    # return [str(rec_result)]
+    return ['fskalfj']
 
 
 def get_recs_for_idx(idx):

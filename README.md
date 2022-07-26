@@ -10,3 +10,5 @@ Please edit data/input/input.txt with the text of your movie.
 use romanized title.)
 
 Using Python 3.7.9 as a virtual environment.
+
+Data used from [Movinder's set](github.com/Movinder/movielens-imdb-exploration)
