@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
+    </head>
+    <body>
+        <h1 style="text-align:center">Hazelcast Movie Recommender</h1>
+        <div class="container">
+        <form>
+            <div class="form-group">
+                <label class="form-label" for="movie-input">Enter a Movie You Like</label>
+                <input type="text" id="movie-input" placeholder="Toy Story">
+                <button class="btn btn-primary">Go</button>
+            </div>
+        </form>
+        </div>
+        <div class="container">
+            <div class="columns">
+            {% for recommendation in recommendations %}
+                {% if loop.index is odd %}
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                          <div class="card-title h5">{{recommendation.title}}</div>
+                        </div>
+                        <div class="card-image">
+                            <img src="{{ recommendation.image_url }}" class="img-responsive">
+                        </div>
+                    </div>                    
+                </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+            <div class="columns">
+            {% for recommendation in recommendations %}
+                {% if loop.index is even %}
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                          <div class="card-title h5">{{recommendation.title}}</div>
+                        </div>
+                        <div class="card-image">
+                            <img src="{{ recommendation.image_url }}" class="img-responsive">
+                        </div>
+                    </div>                    
+                </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+    </body>
+</html>
