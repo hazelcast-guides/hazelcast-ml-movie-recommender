@@ -15,31 +15,40 @@ def onehotencoding2genre(x):
             ret_val.append(c)
     return ret_val
 
-
+# read movies, convert json fields to objects
 df_movies = pd.read_csv("archive/moviedb/movies_cast_company.csv", encoding='utf8')
 df_movies["cast"] = df_movies["cast"].apply(lambda x: json.loads(x))
 df_movies["company"] = df_movies["company"].apply(lambda x: json.loads(x))
 df_movies["genres"] = df_movies.apply(lambda x: onehotencoding2genre(x), axis=1)
 
+# read movie ratings
 df_ratings = pd.read_csv("archive/moviedb/ratings.csv")
 
+# read users 
 df_users = pd.read_csv("archive/moviedb/users.csv")
 
+# merge movies, ratings and users into one big df
 df = pd.merge(df_movies, df_ratings, on="movie_id_ml")
 df = pd.merge(df, df_users, on="user_id")
 
+
+# compute the number or rating and mean rating by movie
 df_movie_count_mean = df.groupby(["movie_id_ml", "title"], as_index=False)["rating"].agg(
     ["count", "mean"]).reset_index()
 
+# compute the mean rating across all movies
 C = df_movie_count_mean["mean"].mean()
 
+# compute the 90th percentile rating across all movies
 m = df_movie_count_mean["count"].quantile(0.9)
 
 df_movies_1 = df_movie_count_mean.copy()
 
+# merge in the number of ratings and the average rating
 df = pd.merge(df_movies, df_movies_1, on=["movie_id_ml", "title"])
 
 
+# compute a rating that is normalized in some sense (more details wanted)
 def weighted_rating(x, m=m, C=C):
     """Calculation based on the IMDB formula"""
     v = x['count']
@@ -71,6 +80,7 @@ df_cbr['title'] = df['title']
 df_cbr['mixed'] = df_cbr['cast'] + df_cbr['genre']
 df_cbr['mixed'] = df_cbr['mixed'].apply(lambda x: ' '.join(x))
 
+# I think this is a big vector of words in the cast and genre 
 count = CountVectorizer(analyzer='word', ngram_range=(1, 2), min_df=0, stop_words='english')
 count_matrix = count.fit_transform(df_cbr['mixed'])
 count_matrix.todense()
@@ -123,5 +133,6 @@ def get_recommendations(title):
 
 
 # example, replace with other movie title
-# print(get_recommendations("toy story"))
+print(get_recommendations("toy story"))
 # print(do_recommender(["toy story"]))
+        

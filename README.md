@@ -14,4 +14,13 @@ new input will overwrite the file.
 
 Developed using Hazelcast 5.1.2 and Python 3.7.9 as a virtual environment.
 
-Data used from [Movinder's set](github.com/Movinder/movielens-imdb-exploration).
+
+## Prerequisites
+
+Before running this project, clone https://github.com/hazelcast-guides/spring-hazelcast-pipeline-dispatcher and 
+install it locally by running `mvn clean install`. Verify that the version built matches the one needed by 
+this project. See `hazelcast.pipeline.dispatcher.version` in `pom.xml`.  If it does not then check out the 
+required version `git checkout n.n.n` and build it locally with `mvn clean install`.
+
+## Additional Notes 
+- Data from [Movinder's set](github.com/Movinder/movielens-imdb-exploration).
