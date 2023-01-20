@@ -1,7 +1,8 @@
 services:
 
   hz:
-    image: hazelcast/hazelcast:5.2.1
+    build:
+      context: hazelcast-with-python
     environment:
       JAVA_OPTS: -Dhazelcast.config=/project/config/hazelcast.yaml
     volumes:

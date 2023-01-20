@@ -58,7 +58,7 @@ public class RecPipelineRunner implements Runnable {
         // Create the Hazelcast runtime instance
         Config config = new Config();
         config.getJetConfig().setEnabled(true).setResourceUploadEnabled(true);
-        HazelcastInstance hazelcast = Hazelcast.newHazelcastInstance(config);
+        HazelcastInstance hazelcast = Hazelcast.newHazelcastInstance();
 
         // Create the Hazelcast Jet pipeline
         Pipeline p = Pipeline.create();

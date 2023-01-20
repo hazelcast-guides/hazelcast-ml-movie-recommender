@@ -93,10 +93,8 @@ ml_ids = df_cbr['movie_id_ml']
 
 
 def do_recommender(input_list):
-    # if len(input_list) != 1:
-    #    raise ValueError("Expected input list of length 1.")
-    rec_result = get_recommendations(input_list[0])
-    return [str(rec_result)]
+    rec_result = [get_recommendations(title.lower()).to_json(orient='index') if title.lower() in indices else '{}' for title in input_list ]
+    return rec_result
 
 
 def get_recs_for_idx(idx):
@@ -139,6 +137,7 @@ def get_recommendations(title):
 
 
 # example, replace with other movie title
-print(get_recommendations("toy story"))
-# print(do_recommender(["toy story"]))
+# print(get_recommendations("toy story"))
+# for recommendation in do_recommender(["No Such Thing", "Die Hard"]):
+#     print(json.dumps(json.loads(recommendation), indent=2))
         
