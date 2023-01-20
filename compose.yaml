@@ -21,7 +21,6 @@ services:
 
   cli:
     image: hazelcast/hazelcast:5.2.1
-    command: hz-cli
     volumes:
       - ".:/project"
     command: >
@@ -41,6 +40,17 @@ services:
       - "8888:8080"
     networks:
       - hznet
+
+  refdata_loader:
+    build: 
+      context: refdata-loader
+    environment:
+      HZ_CLUSTER_NAME: dev
+      HZ_MEMBERS: "hz:5701"
+      MOVIE_POSTER_FILE: movie_poster.csv
+    networks:
+      - hznet
+
 
 networks:
   hznet:
