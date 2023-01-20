@@ -2,6 +2,8 @@ package hazelcast.platform.solutions.recommender;
 
 //import hazelcast.platform.solutions.pipeline.dispatcher.PipelineDispatcherFactory;
 //import org.springframework.beans.factory.annotation.Autowired;
+import hazelcast.platform.solutions.pipeline.dispatcher.PipelineDispatcherFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,15 +14,12 @@ import java.util.List;
 
 @RestController
 public class RecommenderServiceController {
-//    @Autowired
-//    PipelineDispatcherFactory pipelineDispatcherFactory;
+    @Autowired
+    PipelineDispatcherFactory pipelineDispatcherFactory;
 
     @GetMapping("/recommendations")
     public DeferredResult<List<Recommendation>> getRecommendations(@RequestParam String like){
-//        return pipelineDispatcherFactory.<String,String>dispatcherFor("recommendation").send(input);
-        DeferredResult<List<Recommendation>> result = new DeferredResult<>();
-        result.setResult(dummyRecommendations);
-        return result;
+        return pipelineDispatcherFactory.<String,List<Recommendation>>dispatcherFor("recommendation").send(like);
     }
 
     private static final ArrayList<Recommendation> dummyRecommendations = new ArrayList<>();

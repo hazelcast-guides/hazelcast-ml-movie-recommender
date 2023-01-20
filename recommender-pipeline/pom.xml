@@ -11,26 +11,27 @@
   </parent>
 
   <artifactId>recommender-pipeline</artifactId>
+  <packaging>jar</packaging>
 
   <name>Recommender Pipeline</name>
 
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>com.hazelcast</groupId>
       <artifactId>hazelcast</artifactId>
       <version>${hazelcast.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.hazelcast.jet</groupId>
       <artifactId>hazelcast-jet-python</artifactId>
       <version>${hazelcast.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>hazelcast.platform.solutions</groupId>
+      <artifactId>spring-hazelcast-pipeline-dispatcher</artifactId>
+      <version>${hazelcast.pipeline.dispatcher.version}</version>
     </dependency>
     <!-- <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -83,5 +84,23 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <createDependencyReducedPom>false</createDependencyReducedPom>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>

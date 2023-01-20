@@ -1,0 +1,46 @@
+services:
+
+  hz:
+    image: hazelcast/hazelcast:5.2.1
+    environment:
+      JAVA_OPTS: -Dhazelcast.config=/project/config/hazelcast.yaml
+    volumes:
+      - ".:/project"
+    networks:
+      - hznet
+
+  mc:
+    image: hazelcast/management-center:5.2.1
+    environment:
+      MC_DEFAULT_CLUSTER: dev
+      MC_DEFAULT_CLUSTER_MEMBERS: hz:5701
+    ports:
+      - "8080:8080"
+    networks:
+      - hznet
+
+  cli:
+    image: hazelcast/hazelcast:5.2.1
+    command: hz-cli
+    volumes:
+      - ".:/project"
+    command: >
+      tail -f < /dev/null
+    networks:
+      - hznet
+
+  recommender_service:
+    image: openjdk:11
+    command: java -jar /project/recommender-service/target/recommender-service-1.0.1-SNAPSHOT.jar
+    environment:
+      hazelcast.pipeline.dispatcher.hazelcast_config_file: /project/config/hazelcast-client.yaml
+      hazelcast.pipeline.dispatcher.request_timeout_ms: "1000"
+    volumes:
+      - ".:/project"
+    ports:
+      - "8888:8080"
+    networks:
+      - hznet
+
+networks:
+  hznet:

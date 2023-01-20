@@ -1,8 +1,7 @@
 package hazelcast.platform.solutions.recommender;
 
-import java.io.Serializable;
 
-public class Recommendation implements Serializable {
+public class Recommendation {
     private String title;
     private String image_url;
 

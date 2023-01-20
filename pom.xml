@@ -16,12 +16,11 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <hazelcast.version>5.2.1</hazelcast.version>
-    <hazelcast.pipeline.dispatcher.version>1.0.1</hazelcast.pipeline.dispatcher.version>
+    <hazelcast.pipeline.dispatcher.version>1.0.2</hazelcast.pipeline.dispatcher.version>
   </properties>
 
     <modules>
         <module>recommender-service</module>
         <module>recommender-pipeline</module>
-        <!-- <module>recommender-domain</module> -->
     </modules>
 </project>
