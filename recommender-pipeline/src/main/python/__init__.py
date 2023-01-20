@@ -7,8 +7,8 @@ from sklearn.cluster import KMeans
 from sklearn.utils import shuffle
 from sklearn.metrics import confusion_matrix
 
-df1 = pd.read_csv("archive/moviedb/movies.csv")
-df2 = pd.read_csv("archive/moviedb/cast.csv")
-df3 = pd.read_csv("archive/moviedb/ratings.csv")
-df4 = pd.read_csv("archive/moviedb/users.csv")
+df1 = pd.read_csv("moviedb/movies.csv")
+df2 = pd.read_csv("moviedb/cast.csv")
+df3 = pd.read_csv("moviedb/ratings.csv")
+df4 = pd.read_csv("moviedb/users.csv")
 

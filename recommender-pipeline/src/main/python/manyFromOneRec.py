@@ -16,16 +16,16 @@ def onehotencoding2genre(x):
     return ret_val
 
 # read movies, convert json fields to objects
-df_movies = pd.read_csv("archive/moviedb/movies_cast_company.csv", encoding='utf8')
+df_movies = pd.read_csv("moviedb/movies_cast_company.csv", encoding='utf8')
 df_movies["cast"] = df_movies["cast"].apply(lambda x: json.loads(x))
 df_movies["company"] = df_movies["company"].apply(lambda x: json.loads(x))
 df_movies["genres"] = df_movies.apply(lambda x: onehotencoding2genre(x), axis=1)
 
 # read movie ratings
-df_ratings = pd.read_csv("archive/moviedb/ratings.csv")
+df_ratings = pd.read_csv("moviedb/ratings.csv")
 
 # read users 
-df_users = pd.read_csv("archive/moviedb/users.csv")
+df_users = pd.read_csv("moviedb/users.csv")
 
 # merge movies, ratings and users into one big df
 df = pd.merge(df_movies, df_ratings, on="movie_id_ml")
