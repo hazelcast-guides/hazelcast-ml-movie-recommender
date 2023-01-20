@@ -75,6 +75,7 @@ df_cbr['genre'] = df['genres']
 
 # handle title
 df_cbr['title'] = df['title']
+df_cbr['movie_id_ml'] = df['movie_id_ml']
 
 # merge all
 df_cbr['mixed'] = df_cbr['cast'] + df_cbr['genre']
@@ -88,6 +89,7 @@ count_matrix.todense()
 cosine_sim = cosine_similarity(count_matrix, count_matrix)
 indices = pd.Series(df_cbr.index, index=df_cbr['title'])
 titles = df_cbr['title']
+ml_ids = df_cbr['movie_id_ml']
 
 
 def do_recommender(input_list):
@@ -105,13 +107,17 @@ def get_recs_for_idx(idx):
     movie_indices = [i[0] for i in similarity_scores]
     similar_scores = [i[1] for i in similarity_scores]
     similar_scores = pd.Series(similar_scores, index=movie_indices)
-    titlesID = titles.iloc[movie_indices]
+    recommended_titles = titles.iloc[movie_indices]
+    recommended_mlids = ml_ids.iloc[movie_indices]
 
-    df_titles = titlesID.to_frame()
+    df_titles = recommended_titles.to_frame()
+    df_ml_ids = recommended_mlids.to_frame()
+    df_ml_ids = df_ml_ids.rename_axis('id')
     df_titles = df_titles.rename_axis('id')
     df_scores = similar_scores.to_frame()
     df_scores = df_scores.rename_axis('id')
     final = df_titles.merge(df_scores, left_on='id', right_on='id')
+    final = final.merge(df_ml_ids, left_on='id', right_on='id')
     final = final.drop_duplicates('title')
     return final.dropna()
 
