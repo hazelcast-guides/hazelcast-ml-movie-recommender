@@ -92,8 +92,15 @@ titles = df_cbr['title']
 ml_ids = df_cbr['movie_id_ml']
 
 
+# returns list corresponding to input list
+# each list entry has the format "123|{ JSON formatted recommendation }
+# sample recommendation JSON is at the bottom of this file
+#
 def do_recommender(input_list):
-    rec_result = [get_recommendations(title.lower()).to_json(orient='index') if title.lower() in indices else '{}' for title in input_list ]
+    parsed_input = [item.split("|", maxsplit=1) for item in input_list]
+
+    # result looks like [["123","Toy Story"],["456","Die Hard"]]
+    rec_result = [ title[0] + '|' + get_recommendations(title[1].lower()).to_json(orient='table') if title[1].lower() in indices else title[0] + "|{}" for title in parsed_input ]
     return rec_result
 
 
@@ -105,7 +112,7 @@ def get_recs_for_idx(idx):
     movie_indices = [i[0] for i in similarity_scores]
     similar_scores = [i[1] for i in similarity_scores]
     similar_scores = pd.Series(similar_scores, index=movie_indices)
-    recommended_titles = titles.iloc[movie_indices]
+    recommended_titles = titles.iloc[movie_indices].transform(str.title)
     recommended_mlids = ml_ids.iloc[movie_indices]
 
     df_titles = recommended_titles.to_frame()
@@ -135,9 +142,162 @@ def get_recommendations(title):
     else:
         raise TypeError("Unrecognized index type (expected int64 or Series)")
 
+# Sample Invocation
+# for recommendation in do_recommender(["123|No Such Thing", "456|Die Hard"]):
+#      results = recommendation.split("|", maxsplit=1)
+#      print(results[0])
+#      print(json.dumps(json.loads(results[1]), indent=2))
 
-# example, replace with other movie title
-# print(get_recommendations("toy story"))
-# for recommendation in do_recommender(["No Such Thing", "Die Hard"]):
-#     print(json.dumps(json.loads(recommendation), indent=2))
-        
+
+# Sample Output
+# 123
+# {}
+# 456
+# {
+#     "schema": {
+#         "fields": [
+#             {
+#                 "name": "id",
+#                 "type": "integer"
+#             },
+#             {
+#                 "name": "title",
+#                 "type": "string"
+#             },
+#             {
+#                 "name": 0,
+#                 "type": "number"
+#             },
+#             {
+#                 "name": "movie_id_ml",
+#                 "type": "integer"
+#             }
+#         ],
+#         "primaryKey": [
+#             "id"
+#         ],
+#         "pandas_version": "1.4.0"
+#     },
+#     "data": [
+#         {
+#             "id": 893,
+#             "title": "Street Fighter",
+#             "0": 0.1605144708,
+#             "movie_id_ml": 1413
+#         },
+#         {
+#             "id": 575,
+#             "title": "Demolition Man",
+#             "0": 0.1539600718,
+#             "movie_id_ml": 578
+#         },
+#         {
+#             "id": 334,
+#             "title": "Die Hard 2",
+#             "0": 0.1481481481,
+#             "movie_id_ml": 226
+#         },
+#         {
+#             "id": 1132,
+#             "title": "Turbulence",
+#             "0": 0.1481481481,
+#             "movie_id_ml": 986
+#         },
+#         {
+#             "id": 248,
+#             "title": "The Long Kiss Goodnight",
+#             "0": 0.1203858531,
+#             "movie_id_ml": 147
+#         },
+#         {
+#             "id": 341,
+#             "title": "Executive Decision",
+#             "0": 0.1203858531,
+#             "movie_id_ml": 685
+#         },
+#         {
+#             "id": 389,
+#             "title": "Breakdown",
+#             "0": 0.1203858531,
+#             "movie_id_ml": 295
+#         },
+#         {
+#             "id": 532,
+#             "title": "Eraser",
+#             "0": 0.1203858531,
+#             "movie_id_ml": 597
+#         },
+#         {
+#             "id": 719,
+#             "title": "Mirage",
+#             "0": 0.1203858531,
+#             "movie_id_ml": 1673
+#         },
+#         {
+#             "id": 823,
+#             "title": "Nick Of Time",
+#             "0": 0.1203858531,
+#             "movie_id_ml": 761
+#         },
+#         {
+#             "id": 843,
+#             "title": "The Courtyard",
+#             "0": 0.1203858531,
+#             "movie_id_ml": 1548
+#         },
+#         {
+#             "id": 1134,
+#             "title": "Natural Born Killers",
+#             "0": 0.1203858531,
+#             "movie_id_ml": 53
+#         },
+#         {
+#             "id": 1226,
+#             "title": "Dante'S Peak",
+#             "0": 0.1203858531,
+#             "movie_id_ml": 323
+#         },
+#         {
+#             "id": 278,
+#             "title": "Diva",
+#             "0": 0.120222618,
+#             "movie_id_ml": 855
+#         },
+#         {
+#             "id": 80,
+#             "title": "The Hunt For Red October",
+#             "0": 0.1154700538,
+#             "movie_id_ml": 265
+#         },
+#         {
+#             "id": 113,
+#             "title": "Air Force One",
+#             "0": 0.1154700538,
+#             "movie_id_ml": 300
+#         },
+#         {
+#             "id": 396,
+#             "title": "Die Hard: With A Vengeance",
+#             "0": 0.1154700538,
+#             "movie_id_ml": 550
+#         },
+#         {
+#             "id": 582,
+#             "title": "The Jackal",
+#             "0": 0.1154700538,
+#             "movie_id_ml": 689
+#         },
+#         {
+#             "id": 957,
+#             "title": "Chasers",
+#             "0": 0.1154700538,
+#             "movie_id_ml": 1489
+#         },
+#         {
+#             "id": 986,
+#             "title": "Hard Rain",
+#             "0": 0.1154700538,
+#             "movie_id_ml": 349
+#         }
+#     ]
+# }
