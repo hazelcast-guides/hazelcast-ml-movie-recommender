@@ -93,14 +93,14 @@ ml_ids = df_cbr['movie_id_ml']
 
 
 # returns list corresponding to input list
-# each list entry has the format "123|{ JSON formatted recommendation }
+# each list entry has the format "123,{ JSON formatted recommendation }
 # sample recommendation JSON is at the bottom of this file
 #
 def do_recommender(input_list):
-    parsed_input = [item.split("|", maxsplit=1) for item in input_list]
+    parsed_input = [item.split(",", maxsplit=1) for item in input_list]
 
     # result looks like [["123","Toy Story"],["456","Die Hard"]]
-    rec_result = [ title[0] + '|' + get_recommendations(title[1].lower()).to_json(orient='table') if title[1].lower() in indices else title[0] + "|{}" for title in parsed_input ]
+    rec_result = [ title[0] + ',' + get_recommendations(title[1].lower()).to_json(orient='table') if title[1].lower() in indices else title[0] + ",{}" for title in parsed_input ]
     return rec_result
 
 
@@ -143,10 +143,10 @@ def get_recommendations(title):
         raise TypeError("Unrecognized index type (expected int64 or Series)")
 
 # Sample Invocation
-# for recommendation in do_recommender(["123|No Such Thing", "456|Die Hard"]):
-#      results = recommendation.split("|", maxsplit=1)
-#      print(results[0])
-#      print(json.dumps(json.loads(results[1]), indent=2))
+for recommendation in do_recommender(["123,No Such Thing", "456,Die Hard"]):
+     results = recommendation.split(",", maxsplit=1)
+     print(results[0])
+     print(json.dumps(json.loads(results[1]), indent=2))
 
 
 # Sample Output
