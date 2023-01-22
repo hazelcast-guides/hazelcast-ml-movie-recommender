@@ -19,12 +19,24 @@ services:
     networks:
       - hznet
 
-  cli:
+  submit-job:
     image: wrmay/hazelcast_ds:5.2.1
+    environment:
+      HZ_CLUSTER_NAME: dev
+      HZ_MEMBERS: hz
+      AWAIT_MAP: SYSTEM
+      AWAIT_KEY: LOADED
+      AWAIT_VALUE: "TRUE"  # don't remove these quotes
     volumes:
       - ".:/project"
+    # WARNING: formatting on the command below is outrageously finicky
     command: >
-      tail -f < /dev/null
+      bash -c "java -jar /project/map-waiter/target/map-waiter-1.0-SNAPSHOT.jar 
+      && hz-cli submit -c=hazelcast.platform.solutions.recommender.RecommenderPipeline \\
+        -t=dev@hz \\
+        -n=recommender \\
+       /project/recommender-pipeline/target/recommender-pipeline-1.0-SNAPSHOT.jar /project/python-recommender"
+
     networks:
       - hznet
 
