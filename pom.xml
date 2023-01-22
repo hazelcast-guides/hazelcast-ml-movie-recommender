@@ -23,5 +23,6 @@
     <modules>
         <module>recommender-service</module>
         <module>recommender-pipeline</module>
+        <module>map-waiter</module>
     </modules>
 </project>
