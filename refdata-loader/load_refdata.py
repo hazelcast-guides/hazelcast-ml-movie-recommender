@@ -30,7 +30,7 @@ if __name__ == '__main__':
     )
     print("CONNECTED to Hazelcast")
 
-    movie_poster_map = hz.get_map('movie_posters').blocking()
+    movie_poster_map = hz.get_replicated_map('movie_posters').blocking()
 
     count = 0
     lines = 0

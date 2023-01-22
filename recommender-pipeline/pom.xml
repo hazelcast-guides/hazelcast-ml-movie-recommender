@@ -33,7 +33,11 @@
       <artifactId>spring-hazelcast-pipeline-dispatcher</artifactId>
       <version>${hazelcast.pipeline.dispatcher.version}</version>
     </dependency>
-    <!-- <dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>    <!-- <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
       <version>2.17.0</version>

@@ -1,12 +1,11 @@
 services:
 
   hz:
-    build:
-      context: hazelcast-with-python
+    image: wrmay/hazelcast_ds:5.2.1
     environment:
       JAVA_OPTS: -Dhazelcast.config=/project/config/hazelcast.yaml
     volumes:
-      - ".:/project"
+      - "./config:/project/config"
     networks:
       - hznet
 
@@ -21,7 +20,7 @@ services:
       - hznet
 
   cli:
-    image: hazelcast/hazelcast:5.2.1
+    image: wrmay/hazelcast_ds:5.2.1
     volumes:
       - ".:/project"
     command: >
