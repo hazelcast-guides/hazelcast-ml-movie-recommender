@@ -50,5 +50,9 @@ if __name__ == '__main__':
             except Exception as x:
                 print(f"ERROR loading line {lines}: {x}")
 
-        print(f'loaded {count} of {lines} lines')
+    print(f'loaded {count} of {lines} lines')
+
+    # signal completion
+    system_map = hz.get_map("SYSTEM").blocking()
+    system_map.put("LOADED", "TRUE")
     hz.shutdown()
