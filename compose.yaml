@@ -28,7 +28,7 @@ services:
     networks:
       - hznet
 
-  recommender_service:
+  recommender-service:
     image: openjdk:11
     command: java -jar /project/recommender-service/target/recommender-service-1.0.1-SNAPSHOT.jar
     environment:
@@ -41,7 +41,7 @@ services:
     networks:
       - hznet
 
-  refdata_loader:
+  refdata-loader:
     build: 
       context: refdata-loader
     environment:
@@ -50,7 +50,18 @@ services:
       MOVIE_POSTER_FILE: movie_poster.csv
     networks:
       - hznet
-
+      
+  ui:
+    build: 
+      context: ui
+    environment:
+      RECOMMENDER_SERVICE_URL: "http://recommender-service:8080/recommendations"
+    ports:
+      - "80:5000"
+    networks:
+      - hznet
+    
 
 networks:
   hznet:
+  
